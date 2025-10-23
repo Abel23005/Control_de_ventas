@@ -209,9 +209,7 @@ fun LoginScreen(navController: NavController) {
 
         Button(
             onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    navController.navigate("route_home")
-                }
+                navController.navigate("route_register")
             },
             modifier = Modifier
                 .fillMaxWidth()
