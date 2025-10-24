@@ -45,11 +45,11 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
             .fillMaxSize()
             .padding(paddingValues)
             .padding(24.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Bienvenido a tu Menú\nPrincipal",
+            text = "Bienvenido a tu Menú Principal",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF1F2937)
@@ -59,48 +59,225 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
         Text(
             text = "Selecciona una opción",
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             color = Color(0xFF6B7280)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(48.dp))
 
-        NavigationCard(
-            title = "Productos",
-            subtitle = "Gestiona tu inventario",
-            emoji = "📦",
-            onClick = { navController.navigate("route_products") }
-        )
+        // --- Productos ---
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clickable { navController.navigate("route_productos") },
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    modifier = Modifier.size(70.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFF4F46E5).copy(alpha = 0.1f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(text = "📦", fontSize = 36.sp)
+                    }
+                }
 
-        Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.width(20.dp))
 
-        NavigationCard(
-            title = "Ventas",
-            subtitle = "Registra tus ventas",
-            emoji = "💰",
-            onClick = { navController.navigate("route_sales") }
-        )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Productos",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937)
+                    )
+                    Text(
+                        text = "Gestiona tu inventario",
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
 
-        Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "›",
+                    fontSize = 32.sp,
+                    color = Color(0xFF4F46E5),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
 
-        NavigationCard(
-            title = "Compras / Insumos",
-            subtitle = "Controla tus compras",
-            emoji = "🧾",
-            onClick = { navController.navigate("route_purchases") }
-        )
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(16.dp))
+        // --- Ventas ---
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clickable { navController.navigate("route_ventas") },
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    modifier = Modifier.size(70.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFF10B981).copy(alpha = 0.1f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(text = "💰", fontSize = 36.sp)
+                    }
+                }
 
-        NavigationCard(
-            title = "Cierre de caja / Reportes",
-            subtitle = "Resumen y reportes",
-            emoji = "📊",
-            onClick = { navController.navigate("route_reports") }
-        )
+                Spacer(modifier = Modifier.width(20.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Ventas",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937)
+                    )
+                    Text(
+                        text = "Registra tus ventas",
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
 
+                Text(
+                    text = "›",
+                    fontSize = 32.sp,
+                    color = Color(0xFF10B981),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // --- Compras / Insumos ---
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clickable { navController.navigate("route_compras") },
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    modifier = Modifier.size(70.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFFF59E0B).copy(alpha = 0.1f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(text = "🧾", fontSize = 36.sp)
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Compras / Insumos",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937)
+                    )
+                    Text(
+                        text = "Controla tus compras",
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+
+                Text(
+                    text = "›",
+                    fontSize = 32.sp,
+                    color = Color(0xFFF59E0B),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // --- Cierre de caja / Reportes ---
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clickable { navController.navigate("route_reportes") },
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    modifier = Modifier.size(70.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFF3B82F6).copy(alpha = 0.1f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(text = "📊", fontSize = 36.sp)
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Cierre de caja / Reportes",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937)
+                    )
+                    Text(
+                        text = "Resumen y reportes",
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+
+                Text(
+                    text = "›",
+                    fontSize = 32.sp,
+                    color = Color(0xFF3B82F6),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(48.dp))
+
+        // --- Botón Cerrar Sesión ---
         Button(
             onClick = {
                 navController.navigate("route_login") {
@@ -119,48 +296,6 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )
-        }
-    }
-}
-
-@Composable
-fun NavigationCard(
-    title: String,
-    subtitle: String,
-    emoji: String,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    modifier = Modifier.size(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFFF3F4F6)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(text = emoji, fontSize = 24.sp)
-                    }
-                }
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                    Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF111827))
-                    Text(text = subtitle, fontSize = 12.sp, color = Color(0xFF6B7280))
-                }
-            }
-            Text(text = ">", color = Color(0xFF4F46E5))
         }
     }
 }
