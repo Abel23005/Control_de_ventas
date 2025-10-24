@@ -65,6 +65,7 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(48.dp))
 
+        // --- Productos ---
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -117,6 +118,7 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        // --- Ventas ---
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -167,8 +169,115 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
             }
         }
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // --- Compras / Insumos ---
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clickable { navController.navigate("route_compras") },
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    modifier = Modifier.size(70.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFFF59E0B).copy(alpha = 0.1f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(text = "🧾", fontSize = 36.sp)
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Compras / Insumos",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937)
+                    )
+                    Text(
+                        text = "Controla tus compras",
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+
+                Text(
+                    text = "›",
+                    fontSize = 32.sp,
+                    color = Color(0xFFF59E0B),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // --- Cierre de caja / Reportes ---
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clickable { navController.navigate("route_reportes") },
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    modifier = Modifier.size(70.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color(0xFF3B82F6).copy(alpha = 0.1f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(text = "📊", fontSize = 36.sp)
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Cierre de caja / Reportes",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1F2937)
+                    )
+                    Text(
+                        text = "Resumen y reportes",
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+
+                Text(
+                    text = "›",
+                    fontSize = 32.sp,
+                    color = Color(0xFF3B82F6),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.height(48.dp))
 
+        // --- Botón Cerrar Sesión ---
         Button(
             onClick = {
                 navController.navigate("route_login") {
