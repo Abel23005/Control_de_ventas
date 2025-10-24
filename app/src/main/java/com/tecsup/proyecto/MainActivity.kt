@@ -37,6 +37,10 @@ fun MainComponent() {
         composable("route_login") { LoginScreen(navController) }
         composable("route_register") { RegisterScreen(navController) }
         composable("route_home") { HomeScreen(navController) }
+        composable("route_products") { ProductsPlaceholder() }
+        composable("route_sales") { SalesPlaceholder() }
+        composable("route_purchases") { PurchasesPlaceholder() }
+        composable("route_reports") { ReportsPlaceholder() }
     }
 }
 
@@ -45,3 +49,15 @@ fun MainComponent() {
 fun GreetingPreview() {
     MainComponent()
 }
+
+@Composable
+fun ProductsPlaceholder() { Text("Productos - próximamente") }
+
+@Composable
+fun SalesPlaceholder() { Text("Ventas - próximamente") }
+
+@Composable
+fun PurchasesPlaceholder() { Text("Compras/Insumos - próximamente") }
+
+@Composable
+fun ReportsPlaceholder() { Text("Cierre de caja/Reportes - próximamente") }
