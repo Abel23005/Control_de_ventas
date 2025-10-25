@@ -18,8 +18,7 @@ import androidx.navigation.compose.composable
 import com.tecsup.proyecto.screens.LoginScreen
 import com.tecsup.proyecto.screens.RegisterScreen
 import com.tecsup.proyecto.screens.HomeScreen
-import com.tecsup.proyecto.screens.ComprasScreen
-import com.tecsup.proyecto.screens.ReportesScreen
+import com.tecsup.proyecto.screens.ProductosScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -39,8 +38,7 @@ fun MainComponent() {
         composable("route_login") { LoginScreen(navController) }
         composable("route_register") { RegisterScreen(navController) }
         composable("route_home") { HomeScreen(navController) }
-        composable("route_compras") { ComprasScreen(navController) }
-        composable("route_reportes") { ReportesScreen(navController) }
+        composable ("route_productos"){ ProductosScreen(navController)  }
     }
 }
 
