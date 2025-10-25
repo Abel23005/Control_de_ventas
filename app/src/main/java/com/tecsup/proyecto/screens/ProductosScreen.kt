@@ -14,26 +14,25 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-
-data class Producto(
-    val id: Int,
-    val nombre: String,
-    val precio: Double,
-    val stock: Int
-)
+import com.tecsup.proyecto.data.product.Producto
+import com.tecsup.proyecto.data.product.ProductoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProductosScreen(navController: NavController) {
-    var productos by remember { mutableStateOf(listOf<Producto>()) }
+    val vm: ProductoViewModel = viewModel()
+    val productos by vm.productos.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    var editing by remember { mutableStateOf<Producto?>(null) }
 
     Scaffold(
         topBar = {
@@ -72,17 +71,26 @@ fun ProductosScreen(navController: NavController) {
             }
         }
     ) { paddingValues ->
-        ProductosContent(navController, paddingValues, productos, showDialog,
-            onDismissDialog = { showDialog = false },
-            onProductoAgregado = { nombre, precio, stock ->
-                productos = productos + Producto(
-                    id = productos.size + 1,
-                    nombre = nombre,
-                    precio = precio,
-                    stock = stock
-                )
+        ProductosContent(
+            navController = navController,
+            paddingValues = paddingValues,
+            productos = productos,
+            showDialog = showDialog || editing != null,
+            editing = editing,
+            onDismissDialog = {
                 showDialog = false
-            }
+                editing = null
+            },
+            onProductoAgregado = { nombre, precio, stock ->
+                vm.agregar(nombre, precio, stock)
+                showDialog = false
+            },
+            onProductoEditado = { p ->
+                vm.actualizar(p)
+                editing = null
+            },
+            onEditarClick = { p -> editing = p },
+            onEliminarClick = { p -> vm.eliminar(p) }
         )
     }
 }
@@ -93,8 +101,12 @@ fun ProductosContent(
     paddingValues: PaddingValues,
     productos: List<Producto>,
     showDialog: Boolean,
+    editing: Producto?,
     onDismissDialog: () -> Unit,
-    onProductoAgregado: (String, Double, Int) -> Unit
+    onProductoAgregado: (String, Double, Int) -> Unit,
+    onProductoEditado: (Producto) -> Unit,
+    onEditarClick: (Producto) -> Unit,
+    onEliminarClick: (Producto) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -172,12 +184,17 @@ fun ProductosContent(
                                 )
                             }
 
-                            Text(
-                                text = "S/ ${String.format("%.2f", producto.precio)}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF10B981)
-                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(
+                                    text = "S/ ${String.format("%.2f", producto.precio)}",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF10B981)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                TextButton(onClick = { onEditarClick(producto) }) { Text("Editar") }
+                                TextButton(onClick = { onEliminarClick(producto) }, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) { Text("Eliminar") }
+                            }
                         }
                     }
                 }
@@ -185,11 +202,11 @@ fun ProductosContent(
         }
     }
 
-    // Dialog para agregar producto
+    // Dialog para agregar/editar producto
     if (showDialog) {
-        var nombre by remember { mutableStateOf("") }
-        var precio by remember { mutableStateOf("") }
-        var stock by remember { mutableStateOf("") }
+        var nombre by remember(editing) { mutableStateOf(editing?.nombre ?: "") }
+        var precio by remember(editing) { mutableStateOf(editing?.precio?.toString() ?: "") }
+        var stock by remember(editing) { mutableStateOf(editing?.stock?.toString() ?: "") }
         var showError by remember { mutableStateOf(false) }
 
         AlertDialog(
@@ -197,7 +214,7 @@ fun ProductosContent(
             containerColor = Color.White,
             title = {
                 Text(
-                    text = "Agregar Producto",
+                    text = if (editing == null) "Agregar Producto" else "Editar Producto",
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
@@ -310,7 +327,11 @@ fun ProductosContent(
                             val precioDouble = precio.toDoubleOrNull()
                             val stockInt = stock.toIntOrNull()
                             if (precioDouble != null && stockInt != null && precioDouble > 0 && stockInt >= 0) {
-                                onProductoAgregado(nombre, precioDouble, stockInt)
+                                if (editing == null) {
+                                    onProductoAgregado(nombre, precioDouble, stockInt)
+                                } else {
+                                    onProductoEditado(editing.copy(nombre = nombre, precio = precioDouble, stock = stockInt))
+                                }
                             } else {
                                 showError = true
                             }
@@ -322,7 +343,7 @@ fun ProductosContent(
                         containerColor = Color(0xFF4F46E5)
                     )
                 ) {
-                    Text("Agregar")
+                    Text(if (editing == null) "Agregar" else "Guardar")
                 }
             },
             dismissButton = {
