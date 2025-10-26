@@ -15,12 +15,12 @@ import com.tecsup.proyecto.ui.theme.ProyectoTheme
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.tecsup.proyecto.screens.ComprasScreen
 import com.tecsup.proyecto.screens.LoginScreen
 import com.tecsup.proyecto.screens.RegisterScreen
 import com.tecsup.proyecto.screens.HomeScreen
 import com.tecsup.proyecto.screens.ProductosScreen
 import com.tecsup.proyecto.screens.VentasScreen
+import com.tecsup.proyecto.screens.ComprasScreen
 
 
 class MainActivity : ComponentActivity() {
