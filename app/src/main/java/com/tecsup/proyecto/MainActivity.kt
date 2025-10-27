@@ -19,6 +19,8 @@ import com.tecsup.proyecto.screens.LoginScreen
 import com.tecsup.proyecto.screens.RegisterScreen
 import com.tecsup.proyecto.screens.HomeScreen
 import com.tecsup.proyecto.screens.ProductosScreen
+import com.tecsup.proyecto.screens.VentasScreen
+import com.tecsup.proyecto.screens.ComprasScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -39,6 +41,8 @@ fun MainComponent() {
         composable("route_register") { RegisterScreen(navController) }
         composable("route_home") { HomeScreen(navController) }
         composable ("route_productos"){ ProductosScreen(navController)  }
+        composable ("route_compras"){ ComprasScreen(navController) }
+        composable ("route_ventas"){ VentasScreen(navController) }
     }
 }
 

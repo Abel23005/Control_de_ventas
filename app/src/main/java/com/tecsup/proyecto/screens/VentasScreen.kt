@@ -21,24 +21,24 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.tecsup.proyecto.data.product.Producto
 
-data class Compra(
+data class Venta(
     val id: Int,
     val producto: String,
     val cantidad: Int,
-    val costoUnitario: Double,
+    val precioUnitario: Double,
     val total: Double
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ComprasScreen(navController: NavController) {
+fun VentasScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        "🧾 Compras / Insumos",
+                        "💰 Ventas",
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -52,22 +52,21 @@ fun ComprasScreen(navController: NavController) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF59E0B),
+                    containerColor = Color(0xFF10B981),
                     titleContentColor = Color.White
                 )
             )
         }
     ) { paddingValues ->
-        ComprasContent(navController, paddingValues)
+        VentasContent(navController, paddingValues)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
-    var compras by remember { mutableStateOf(listOf<Compra>()) }
+fun VentasContent(navController: NavController, paddingValues: PaddingValues) {
+    var ventas by remember { mutableStateOf(listOf<Venta>()) }
 
-    // Lista de productos disponibles
     val productosDisponibles = listOf(
         Producto(1, "Coca Cola 500ml", 2.50, 50),
         Producto(2, "Inka Cola 500ml", 2.50, 30),
@@ -88,75 +87,43 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
             .fillMaxSize()
             .padding(paddingValues)
             .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Resumen de compras
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFF59E0B).copy(alpha = 0.1f))
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF10B981).copy(alpha = 0.1f))
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Resumen de compras",
+                    text = "Resumen del día",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1F2937)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Total compras: ${compras.size}",
+                    text = "Total ventas: ${ventas.size}",
                     fontSize = 14.sp,
                     color = Color(0xFF6B7280)
                 )
                 Text(
-                    text = "Total S/ ${String.format("%.2f", compras.sumOf { it.total })}",
+                    text = "Total S/ ${String.format("%.2f", ventas.sumOf { it.total })}",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFFF59E0B)
+                    color = Color(0xFF10B981)
                 )
             }
         }
 
-        // Mostrar precio unitario del producto seleccionado
-        if (productoSeleccionado != null) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF3B82F6).copy(alpha = 0.1f)
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Precio por unidad:",
-                        fontSize = 14.sp,
-                        color = Color(0xFF6B7280)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "S/ ${String.format("%.2f", productoSeleccionado.precio)}",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF3B82F6)
-                    )
-                }
-            }
-        }
-
         Text(
-            text = "Registrar compra o ingreso de stock",
+            text = "Registrar nueva venta",
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold
         )
 
-        // Dropdown de productos
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
@@ -170,7 +137,7 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
                     .menuAnchor()
                     .fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFFF59E0B),
+                    focusedBorderColor = Color(0xFF10B981),
                     unfocusedBorderColor = Color(0xFFE5E7EB)
                 ),
                 shape = RoundedCornerShape(8.dp)
@@ -188,7 +155,7 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
                                     fontWeight = FontWeight.Medium
                                 )
                                 Text(
-                                    text = "S/ ${String.format("%.2f", producto.precio)} c/u - Stock: ${producto.stock}",
+                                    text = "S/ ${String.format("%.2f", producto.precio)} - Stock: ${producto.stock}",
                                     fontSize = 12.sp,
                                     color = Color(0xFF6B7280)
                                 )
@@ -203,14 +170,13 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
             }
         }
 
-        // Campo de cantidad
         OutlinedTextField(
             value = cantidadText,
             onValueChange = { cantidadText = it.filter { ch -> ch.isDigit() } },
-            label = { Text("Cantidad comprada") },
+            label = { Text("Cantidad vendida") },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFFF59E0B),
+                focusedBorderColor = Color(0xFF10B981),
                 unfocusedBorderColor = Color(0xFFE5E7EB)
             ),
             shape = RoundedCornerShape(8.dp),
@@ -221,45 +187,41 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
             )
         )
 
-        // Mostrar precio unitario y total
-        if (productoSeleccionado != null) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFF59E0B).copy(alpha = 0.1f)
-                ),
-                shape = RoundedCornerShape(8.dp)
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFF10B981).copy(alpha = 0.1f)
+            ),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = "Precio por unidad: S/ ${String.format("%.2f", productoSeleccionado.precio)}",
-                        fontSize = 14.sp,
-                        color = Color(0xFF6B7280)
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Total: S/ ${String.format("%.2f", total)}",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFF59E0B)
-                    )
-                }
+                Text(
+                    text = "Total a pagar:",
+                    fontSize = 14.sp,
+                    color = Color(0xFF6B7280)
+                )
+                Text(
+                    text = "S/ ${String.format("%.2f", total)}",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF10B981)
+                )
             }
         }
 
-        // Botón registrar
-        val canRegister = productosDisponibles.isNotEmpty() && cantidad > 0
+        val canRegister = productosDisponibles.isNotEmpty() && cantidad > 0 &&
+                cantidad <= (productoSeleccionado?.stock ?: 0)
 
         Button(
             onClick = {
                 productoSeleccionado?.let { p ->
-                    compras = compras + Compra(
-                        id = compras.size + 1,
+                    ventas = ventas + Venta(
+                        id = ventas.size + 1,
                         producto = p.nombre,
                         cantidad = cantidad,
-                        costoUnitario = p.precio,
+                        precioUnitario = p.precio,
                         total = total
                     )
                 }
@@ -268,17 +230,81 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
             enabled = canRegister,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFF59E0B)
+                containerColor = Color(0xFF10B981)
             ),
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = "Registrar compra",
+                text = "Registrar venta",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )
         }
 
+        if (ventas.isNotEmpty()) {
+            Text(
+                text = "Ventas registradas",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF1F2937)
+            )
 
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(ventas) { venta ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(50.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xFF10B981).copy(alpha = 0.1f)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(text = "💰", fontSize = 24.sp)
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = venta.producto,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1F2937)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Cantidad: ${venta.cantidad} x S/ ${String.format("%.2f", venta.precioUnitario)}",
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF6B7280)
+                                )
+                            }
+
+                            Text(
+                                text = "S/ ${String.format("%.2f", venta.total)}",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF10B981)
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
