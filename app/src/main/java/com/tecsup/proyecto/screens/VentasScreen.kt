@@ -19,7 +19,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tecsup.proyecto.data.product.Producto
+import com.tecsup.proyecto.data.product.ProductoViewModel
 
 data class Venta(
     val id: Int,
@@ -33,6 +35,9 @@ data class Venta(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun VentasScreen(navController: NavController) {
+    val vm: ProductoViewModel = viewModel()
+    val productos by vm.productos.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,28 +63,29 @@ fun VentasScreen(navController: NavController) {
             )
         }
     ) { paddingValues ->
-        VentasContent(navController, paddingValues)
+        VentasContent(navController, paddingValues, productos = productos, onRegistrarVenta = { p, cantidad ->
+            // actualizar stock en DB
+            vm.actualizar(p.copy(stock = p.stock - cantidad))
+        })
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VentasContent(navController: NavController, paddingValues: PaddingValues) {
+fun VentasContent(
+    navController: NavController,
+    paddingValues: PaddingValues,
+    productos: List<Producto>,
+    onRegistrarVenta: (Producto, Int) -> Unit
+) {
     var ventas by remember { mutableStateOf(listOf<Venta>()) }
-
-    val productosDisponibles = listOf(
-        Producto(1, "Coca Cola 500ml", 2.50, 50),
-        Producto(2, "Inka Cola 500ml", 2.50, 30),
-        Producto(3, "Pan Francés", 0.30, 100),
-        Producto(4, "Leche Gloria", 4.50, 25)
-    )
 
     var expanded by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableStateOf(0) }
     var cantidadText by remember { mutableStateOf("") }
 
     val cantidad = cantidadText.toIntOrNull() ?: 0
-    val productoSeleccionado = productosDisponibles.getOrNull(selectedIndex)
+    val productoSeleccionado = productos.getOrNull(selectedIndex)
     val total = cantidad * (productoSeleccionado?.precio ?: 0.0)
 
     Column(
@@ -146,7 +152,7 @@ fun VentasContent(navController: NavController, paddingValues: PaddingValues) {
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                productosDisponibles.forEachIndexed { index, producto ->
+                productos.forEachIndexed { index, producto ->
                     DropdownMenuItem(
                         text = {
                             Column {
@@ -211,12 +217,15 @@ fun VentasContent(navController: NavController, paddingValues: PaddingValues) {
             }
         }
 
-        val canRegister = productosDisponibles.isNotEmpty() && cantidad > 0 &&
+        val canRegister = productos.isNotEmpty() && cantidad > 0 &&
                 cantidad <= (productoSeleccionado?.stock ?: 0)
 
         Button(
             onClick = {
                 productoSeleccionado?.let { p ->
+                    // actualizar stock en base (Room)
+                    onRegistrarVenta(p, cantidad)
+                    // registrar en memoria para mostrar lista del día
                     ventas = ventas + Venta(
                         id = ventas.size + 1,
                         producto = p.nombre,
