@@ -21,6 +21,7 @@ import com.tecsup.proyecto.screens.HomeScreen
 import com.tecsup.proyecto.screens.ProductosScreen
 import com.tecsup.proyecto.screens.VentasScreen
 import com.tecsup.proyecto.screens.ComprasScreen
+import com.tecsup.proyecto.screens.ReportesScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -43,6 +44,7 @@ fun MainComponent() {
         composable ("route_productos"){ ProductosScreen(navController)  }
         composable ("route_compras"){ ComprasScreen(navController) }
         composable ("route_ventas"){ VentasScreen(navController) }
+        composable ("route_reportes"){ ReportesScreen(navController) }
     }
 }
 
