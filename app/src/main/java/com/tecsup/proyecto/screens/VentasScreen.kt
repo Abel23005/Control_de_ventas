@@ -35,8 +35,8 @@ data class Venta(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun VentasScreen(navController: NavController) {
-    val vm: ProductoViewModel = viewModel()
-    val productos by vm.productos.collectAsState()
+    val productoViewModel: ProductoViewModel = viewModel()
+    val productos by productoViewModel.productos.collectAsState()
 
     Scaffold(
         topBar = {
@@ -65,7 +65,7 @@ fun VentasScreen(navController: NavController) {
     ) { paddingValues ->
         VentasContent(navController, paddingValues, productos = productos, onRegistrarVenta = { p, cantidad ->
             // actualizar stock en DB
-            vm.actualizar(p.copy(stock = p.stock - cantidad))
+            productoViewModel.actualizar(p.copy(stock = p.stock - cantidad))
         })
     }
 }
@@ -93,7 +93,8 @@ fun VentasContent(
             .fillMaxSize()
             .padding(paddingValues)
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -109,7 +110,7 @@ fun VentasContent(
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF1F2937)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "Total ventas: ${ventas.size}",
                     fontSize = 14.sp,
@@ -124,11 +125,15 @@ fun VentasContent(
             }
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         Text(
             text = "Registrar nueva venta",
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -175,6 +180,8 @@ fun VentasContent(
                 }
             }
         }
+        
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = cantidadText,
@@ -192,6 +199,8 @@ fun VentasContent(
                 imeAction = ImeAction.Done
             )
         )
+        
+        Spacer(modifier = Modifier.height(16.dp))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -216,25 +225,32 @@ fun VentasContent(
                 )
             }
         }
+        
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // Verificar si se puede registrar la venta
         val canRegister = productos.isNotEmpty() && cantidad > 0 &&
                 cantidad <= (productoSeleccionado?.stock ?: 0)
 
         Button(
             onClick = {
-                productoSeleccionado?.let { p ->
-                    // actualizar stock en base (Room)
-                    onRegistrarVenta(p, cantidad)
-                    // registrar en memoria para mostrar lista del día
-                    ventas = ventas + Venta(
+                productoSeleccionado?.let { producto ->
+                    // Actualizar el stock del producto en la base de datos
+                    onRegistrarVenta(producto, cantidad)
+                    
+                    // Crear una nueva venta y agregarla a la lista
+                    val nuevaVenta = Venta(
                         id = ventas.size + 1,
-                        producto = p.nombre,
+                        producto = producto.nombre,
                         cantidad = cantidad,
-                        precioUnitario = p.precio,
+                        precioUnitario = producto.precio,
                         total = total
                     )
+                    ventas = ventas + nuevaVenta
+                    
+                    // Limpiar el campo de cantidad
+                    cantidadText = ""
                 }
-                cantidadText = ""
             },
             enabled = canRegister,
             modifier = Modifier.fillMaxWidth(),
@@ -249,14 +265,18 @@ fun VentasContent(
                 fontWeight = FontWeight.SemiBold
             )
         }
+        
+        Spacer(modifier = Modifier.height(24.dp))
 
         if (ventas.isNotEmpty()) {
             Text(
-                text = "Ventas registradas",
+                text = "Ventas registradas hoy",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color(0xFF1F2937)
             )
+            
+            Spacer(modifier = Modifier.height(12.dp))
 
             LazyColumn(
                 modifier = Modifier

@@ -58,15 +58,7 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
             color = Color(0xFF1F2937)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Selecciona una opción",
-            fontSize = 16.sp,
-            color = Color(0xFF6B7280)
-        )
-
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(28.dp))
 
         // --- Productos ---
         Card(
@@ -204,7 +196,7 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Compras / Insumos",
+                        text = "Compras ",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF1F2937)
@@ -257,7 +249,7 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Cierre de caja / Reportes",
+                        text = "Reportes",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF1F2937)
