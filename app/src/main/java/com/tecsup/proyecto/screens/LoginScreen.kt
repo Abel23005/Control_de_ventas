@@ -150,36 +150,6 @@ fun LoginScreen(navController: NavController) {
             shape = RoundedCornerShape(8.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = rememberMe,
-                    onCheckedChange = { rememberMe = it },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = Color(0xFF4F46E5)
-                    )
-                )
-                Text(
-                    text = "Recordarme",
-                    fontSize = 14.sp,
-                    color = Color(0xFF374151)
-                )
-            }
-
-            TextButton(onClick = {  }) {
-                Text(
-                    text = "¿Olvidaste tu contraseña?",
-                    fontSize = 14.sp,
-                    color = Color(0xFF4F46E5)
-                )
-            }
-        }
 
 
         Spacer(modifier = Modifier.height(24.dp))

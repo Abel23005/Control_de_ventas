@@ -64,7 +64,7 @@ fun VentasScreen(navController: NavController) {
         }
     ) { paddingValues ->
         VentasContent(navController, paddingValues, productos = productos, onRegistrarVenta = { p, cantidad ->
-            // actualizar stock en DB
+
             productoViewModel.actualizar(p.copy(stock = p.stock - cantidad))
         })
     }
@@ -228,17 +228,14 @@ fun VentasContent(
         
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Verificar si se puede registrar la venta
         val canRegister = productos.isNotEmpty() && cantidad > 0 &&
                 cantidad <= (productoSeleccionado?.stock ?: 0)
 
         Button(
             onClick = {
                 productoSeleccionado?.let { producto ->
-                    // Actualizar el stock del producto en la base de datos
                     onRegistrarVenta(producto, cantidad)
-                    
-                    // Crear una nueva venta y agregarla a la lista
+
                     val nuevaVenta = Venta(
                         id = ventas.size + 1,
                         producto = producto.nombre,
@@ -247,8 +244,7 @@ fun VentasContent(
                         total = total
                     )
                     ventas = ventas + nuevaVenta
-                    
-                    // Limpiar el campo de cantidad
+
                     cantidadText = ""
                 }
             },

@@ -2,7 +2,9 @@ package com.tecsup.proyecto.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -30,7 +32,7 @@ fun ReportesScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        "📊 Cierre de Caja / Reportes",
+                        "📊 Cierre de Caja ",
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -98,8 +100,10 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = { calendar = (calendar.clone() as Calendar).apply { add(Calendar.DAY_OF_MONTH, -1) } }) { Text("◀ Día anterior") }
@@ -119,7 +123,8 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
             color = Color(0xFF1F2937)
         )
 
-        // Card de Ventas
+        Spacer(modifier = Modifier.height(12.dp))
+
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -167,8 +172,7 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
                 )
             }
         }
-
-        // Card de Compras
+        Spacer(modifier = Modifier.height(12.dp))
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -217,9 +221,8 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Card de Balance General
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -259,7 +262,6 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Información adicional
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -371,7 +373,7 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
 
         Button(
             onClick = {
-                // TODO: Implementar cierre de caja
+                navController.navigate("route_home")
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -382,7 +384,7 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = "Cerrar Caja",
+                    text = "Cerrar Caja",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )

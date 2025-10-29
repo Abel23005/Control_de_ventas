@@ -60,7 +60,6 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        // --- Productos ---
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -113,7 +112,6 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // --- Ventas ---
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -166,7 +164,6 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // --- Compras / Insumos ---
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -219,7 +216,6 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // --- Cierre de caja / Reportes ---
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -272,7 +268,6 @@ fun HomeContent(navController: NavController, paddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(48.dp))
 
-        // --- Botón Cerrar Sesión ---
         Button(
             onClick = {
                 navController.navigate("route_login") {
