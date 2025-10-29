@@ -22,6 +22,10 @@ import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tecsup.proyecto.data.product.Producto
 import com.tecsup.proyecto.data.product.ProductoViewModel
+import androidx.compose.ui.platform.LocalContext
+import com.tecsup.proyecto.data.AppDatabase
+import com.tecsup.proyecto.data.reportes.SaleEntity
+import kotlinx.coroutines.launch
 
 data class Venta(
     val id: Int,
@@ -37,6 +41,10 @@ data class Venta(
 fun VentasScreen(navController: NavController) {
     val productoViewModel: ProductoViewModel = viewModel()
     val productos by productoViewModel.productos.collectAsState()
+    val context = LocalContext.current
+    val db = remember { AppDatabase.getInstance(context) }
+    val dao = remember { db.reportesDao() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -64,8 +72,19 @@ fun VentasScreen(navController: NavController) {
         }
     ) { paddingValues ->
         VentasContent(navController, paddingValues, productos = productos, onRegistrarVenta = { p, cantidad ->
-
             productoViewModel.actualizar(p.copy(stock = p.stock - cantidad))
+            scope.launch {
+                dao.insertSales(
+                    listOf(
+                        SaleEntity(
+                            productId = p.id,
+                            quantity = cantidad,
+                            unitPrice = p.precio,
+                            timestamp = System.currentTimeMillis()
+                        )
+                    )
+                )
+            }
         })
     }
 }

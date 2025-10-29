@@ -17,6 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.tecsup.proyecto.data.InMemoryStore
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.tecsup.proyecto.data.AppDatabase
+import com.tecsup.proyecto.data.reportes.ReportesRepository
+import com.tecsup.proyecto.data.reportes.ReportesViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -27,6 +35,7 @@ import java.util.TimeZone
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ReportesScreen(navController: NavController) {
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,15 +59,16 @@ fun ReportesScreen(navController: NavController) {
                     titleContentColor = Color.White
                 )
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { paddingValues ->
-        ReportesContent(navController, paddingValues)
+        ReportesContent(navController, paddingValues, snackbarHostState)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportesContent(navController: NavController, paddingValues: PaddingValues) {
+fun ReportesContent(navController: NavController, paddingValues: PaddingValues, snackbarHostState: SnackbarHostState) {
     val tz = remember { TimeZone.getDefault() }
     var calendar by remember { mutableStateOf(Calendar.getInstance(tz)) }
 
@@ -80,6 +90,21 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
     val dateFormat = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
     val dateLabel = remember(calendar.timeInMillis) { dateFormat.format(Date(calendar.timeInMillis)) }
 
+    // Room + ViewModel (mínimo acoplamiento)
+    val context = LocalContext.current
+    val db = remember { AppDatabase.getInstance(context) }
+    val repo = remember { ReportesRepository(db.reportesDao()) }
+    val vm: ReportesViewModel = viewModel(factory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            @Suppress("UNCHECKED_CAST")
+            return ReportesViewModel(repo) as T
+        }
+    })
+    LaunchedEffect(Unit) { vm.seedIfEmpty() }
+    LaunchedEffect(startOfDay, endOfDay) { vm.loadSums(startOfDay, endOfDay) }
+    val montoVentas by vm.ventas.collectAsState(initial = 0.0)
+    val montoCompras by vm.compras.collectAsState(initial = 0.0)
+
     val ventasDia = remember(InMemoryStore.sales.size, calendar.timeInMillis) {
         InMemoryStore.sales.filter { it.timestamp in startOfDay..endOfDay }
     }
@@ -88,13 +113,11 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
     }
 
     val totalVentas = ventasDia.size
-    val montoVentas = ventasDia.sumOf { it.quantity * it.unitPrice }
     val totalCompras = comprasDia.size
-    val montoCompras = comprasDia.sumOf { it.quantity * it.unitCost }
     val balanceGeneral = montoVentas - montoCompras
 
-    var filterExpanded by remember { mutableStateOf(false) }
-    var selectedProductIndex by remember { mutableStateOf(-1) } // -1 = Todos
+    // Filtro por producto eliminado según solicitud
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -329,51 +352,19 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
             }
         }
 
-        // Filtro por producto (opcional)
-        val products = InMemoryStore.products
-        ExposedDropdownMenuBox(expanded = filterExpanded, onExpandedChange = { filterExpanded = !filterExpanded }) {
-            OutlinedTextField(
-                value = if (selectedProductIndex == -1) "Todos los productos" else products.getOrNull(selectedProductIndex)?.name ?: "",
-                onValueChange = {},
-                label = { Text("Filtrar por producto (opcional)") },
-                readOnly = true,
-                modifier = Modifier
-                    .menuAnchor()
-                    .fillMaxWidth()
-            )
-            ExposedDropdownMenu(expanded = filterExpanded, onDismissRequest = { filterExpanded = false }) {
-                DropdownMenuItem(text = { Text("Todos") }, onClick = { selectedProductIndex = -1; filterExpanded = false })
-                products.forEachIndexed { idx, p ->
-                    DropdownMenuItem(text = { Text(p.name) }, onClick = {
-                        selectedProductIndex = idx
-                        filterExpanded = false
-                    })
-                }
-            }
-        }
-
-        val filteredProductId = if (selectedProductIndex >= 0) products.getOrNull(selectedProductIndex)?.id else null
-        val ventasFiltradas = InMemoryStore.sales.filter { it.timestamp in startOfDay..endOfDay && (filteredProductId == null || it.productId == filteredProductId) }
-        val comprasFiltradas = InMemoryStore.purchases.filter { it.timestamp in startOfDay..endOfDay && (filteredProductId == null || it.productId == filteredProductId) }
-        val totalVentasFiltro = ventasFiltradas.sumOf { it.quantity * it.unitPrice }
-        val totalComprasFiltro = comprasFiltradas.sumOf { it.quantity * it.unitCost }
-        val utilidadFiltro = totalVentasFiltro - totalComprasFiltro
-
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Totales con filtro", fontWeight = FontWeight.SemiBold)
-                Text("Ventas: S/ ${"%.2f".format(totalVentasFiltro)}")
-                Text("Compras: S/ ${"%.2f".format(totalComprasFiltro)}")
-                Divider()
-                Text("Utilidad: S/ ${"%.2f".format(utilidadFiltro)}", fontWeight = FontWeight.Bold)
-            }
-        }
+        // Se removió el filtro por producto y su tarjeta de totales
 
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
             onClick = {
-                navController.navigate("route_home")
+                val fechaHora = SimpleDateFormat("EEEE d 'de' MMMM yyyy HH:mm", Locale("es", "ES")).format(Date())
+                val textoPosNeg = if (balanceGeneral >= 0) "positivo" else "negativo"
+                val mensaje = "Cierre ${fechaHora} — Balance S/ ${"%.2f".format(balanceGeneral)} ${textoPosNeg}"
+                // Persistir mensaje para mostrarlo de forma permanente
+                val prefs = context.getSharedPreferences("cash_close_prefs", android.content.Context.MODE_PRIVATE)
+                prefs.edit().putString("last_closure_message", mensaje).apply()
+                navController.navigate("route_cierre")
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -384,7 +375,7 @@ fun ReportesContent(navController: NavController, paddingValues: PaddingValues) 
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                    text = "Cerrar Caja",
+                text = "Cerrar Caja",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )

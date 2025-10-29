@@ -6,14 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.tecsup.proyecto.data.product.Producto
 import com.tecsup.proyecto.data.product.ProductoDao
+import com.tecsup.proyecto.data.reportes.PurchaseEntity
+import com.tecsup.proyecto.data.reportes.ReportesDao
+import com.tecsup.proyecto.data.reportes.SaleEntity
 
 @Database(
-    entities = [Producto::class],
-    version = 1,
+    entities = [Producto::class, SaleEntity::class, PurchaseEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun productoDao(): ProductoDao
+    abstract fun reportesDao(): ReportesDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null

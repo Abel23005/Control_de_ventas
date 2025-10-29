@@ -20,6 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.tecsup.proyecto.data.product.Producto
+import androidx.compose.ui.platform.LocalContext
+import com.tecsup.proyecto.data.AppDatabase
+import com.tecsup.proyecto.data.reportes.PurchaseEntity
+import kotlinx.coroutines.launch
 
 data class Compra(
     val id: Int,
@@ -33,6 +37,10 @@ data class Compra(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ComprasScreen(navController: NavController) {
+    val context = LocalContext.current
+    val db = remember { AppDatabase.getInstance(context) }
+    val dao = remember { db.reportesDao() }
+    val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,13 +66,30 @@ fun ComprasScreen(navController: NavController) {
             )
         }
     ) { paddingValues ->
-        ComprasContent(navController, paddingValues)
+        ComprasContent(navController, paddingValues, onRegistrarCompra = { p, cantidad, total ->
+            scope.launch {
+                dao.insertPurchases(
+                    listOf(
+                        PurchaseEntity(
+                            productId = p.id,
+                            quantity = cantidad,
+                            unitCost = p.precio,
+                            timestamp = System.currentTimeMillis()
+                        )
+                    )
+                )
+            }
+        })
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
+fun ComprasContent(
+    navController: NavController,
+    paddingValues: PaddingValues,
+    onRegistrarCompra: (Producto, Int, Double) -> Unit
+) {
     var compras by remember { mutableStateOf(listOf<Compra>()) }
 
     val productosDisponibles = listOf(
@@ -258,6 +283,7 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
         Button(
             onClick = {
                 productoSeleccionado?.let { p ->
+                    onRegistrarCompra(p, cantidad, total)
                     compras = compras + Compra(
                         id = compras.size + 1,
                         producto = p.nombre,
@@ -268,6 +294,7 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
                 }
                 cantidadText = ""
             },
+
             enabled = canRegister,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
