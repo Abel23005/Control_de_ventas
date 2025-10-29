@@ -182,18 +182,34 @@ fun ProductosContent(
                                     fontSize = 14.sp,
                                     color = Color(0xFF6B7280)
                                 )
-                            }
-
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "S/ ${String.format("%.2f", producto.precio)}",
-                                    fontSize = 18.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF10B981)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                TextButton(onClick = { onEditarClick(producto) }) { Text("Editar") }
-                                TextButton(onClick = { onEliminarClick(producto) }, colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) { Text("Eliminar") }
+                            }
+
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                TextButton(
+                                    onClick = { onEditarClick(producto) },
+                                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                                ) {
+                                    Text("Editar", fontSize = 13.sp)
+                                }
+                                TextButton(
+                                    onClick = { onEliminarClick(producto) },
+                                    colors = ButtonDefaults.textButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.error
+                                    ),
+                                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                                ) {
+                                    Text("Eliminar", fontSize = 13.sp)
+                                }
                             }
                         }
                     }
@@ -202,7 +218,6 @@ fun ProductosContent(
         }
     }
 
-    // Dialog para agregar/editar producto
     if (showDialog) {
         var nombre by remember(editing) { mutableStateOf(editing?.nombre ?: "") }
         var precio by remember(editing) { mutableStateOf(editing?.precio?.toString() ?: "") }

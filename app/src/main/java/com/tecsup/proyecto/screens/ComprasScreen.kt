@@ -38,7 +38,7 @@ fun ComprasScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        "🧾 Compras / Insumos",
+                        "🧾 Compras ",
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -67,12 +67,13 @@ fun ComprasScreen(navController: NavController) {
 fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
     var compras by remember { mutableStateOf(listOf<Compra>()) }
 
-    // Lista de productos disponibles
     val productosDisponibles = listOf(
-        Producto(1, "Coca Cola 500ml", 2.50, 50),
-        Producto(2, "Inka Cola 500ml", 2.50, 30),
-        Producto(3, "Pan Francés", 0.30, 100),
-        Producto(4, "Leche Gloria", 4.50, 25)
+        Producto(1, "Harina (kg)", 3.50, 20),
+        Producto(2, "Azúcar (kg)", 4.00, 15),
+        Producto(3, "Aceite (litro)", 8.50, 10),
+        Producto(4, "Sal (kg)", 2.00, 25),
+        Producto(5, "Levadura (sobre)", 1.50, 30),
+        Producto(6, "Mantequilla (kg)", 12.00, 8)
     )
 
     var expanded by remember { mutableStateOf(false) }
@@ -91,7 +92,6 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Resumen de compras
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -120,8 +120,8 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
                 )
             }
         }
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Mostrar precio unitario del producto seleccionado
         if (productoSeleccionado != null) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -149,14 +149,15 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
                 }
             }
         }
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Registrar compra o ingreso de stock",
+            text = "Registrar compra ",
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold
         )
+        Spacer(modifier = Modifier.height(12.dp ))
 
-        // Dropdown de productos
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
@@ -203,7 +204,8 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
             }
         }
 
-        // Campo de cantidad
+        Spacer(modifier = Modifier.height(20.dp))
+
         OutlinedTextField(
             value = cantidadText,
             onValueChange = { cantidadText = it.filter { ch -> ch.isDigit() } },
@@ -221,7 +223,7 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
             )
         )
 
-        // Mostrar precio unitario y total
+        Spacer(modifier = Modifier.height(12.dp))
         if (productoSeleccionado != null) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -248,8 +250,9 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
                 }
             }
         }
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Botón registrar
+
         val canRegister = productosDisponibles.isNotEmpty() && cantidad > 0
 
         Button(
@@ -279,6 +282,67 @@ fun ComprasContent(navController: NavController, paddingValues: PaddingValues) {
             )
         }
 
+        if (compras.isNotEmpty()) {
+            Text(
+                text = "Historial de compras",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF1F2937)
+            )
 
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(compras) { compra ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(50.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xFFF59E0B).copy(alpha = 0.1f)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(text = "🧾", fontSize = 24.sp)
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.width(16.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = compra.producto,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1F2937)
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Cantidad: ${compra.cantidad} x S/ ${String.format("%.2f", compra.costoUnitario)}",
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF6B7280)
+                                )
+                            }
+
+                            Text(
+                                text = "S/ ${String.format("%.2f", compra.total)}",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFF59E0B)
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
