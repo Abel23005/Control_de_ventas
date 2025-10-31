@@ -46,7 +46,7 @@ fun ComprasScreen(navController: NavController) {
             TopAppBar(
                 title = {
                     Text(
-                        "🧾 Compras ",
+                        "🧾 Compras",
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -177,7 +177,7 @@ fun ComprasContent(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Registrar compra ",
+            text = "Registrar compra",
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold
         )
@@ -303,7 +303,7 @@ fun ComprasContent(
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = "Guardar",
+                text = "Guardar compra",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )
