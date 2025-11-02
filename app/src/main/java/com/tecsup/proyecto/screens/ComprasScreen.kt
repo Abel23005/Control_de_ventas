@@ -303,7 +303,7 @@ fun ComprasContent(
             shape = RoundedCornerShape(8.dp)
         ) {
             Text(
-                text = "Guardar compra",
+                text = "Guardar compra ✅",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )
