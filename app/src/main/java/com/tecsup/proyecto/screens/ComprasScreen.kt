@@ -181,7 +181,7 @@ fun ComprasContent(
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold
         )
-        Spacer(modifier = Modifier.height(12.dp ))
+        Spacer(modifier = Modifier.height(12.dp))
 
         ExposedDropdownMenuBox(
             expanded = expanded,
