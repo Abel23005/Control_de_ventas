@@ -18,6 +18,10 @@ import androidx.navigation.compose.composable
 import com.tecsup.proyecto.screens.LoginScreen
 import com.tecsup.proyecto.screens.RegisterScreen
 import com.tecsup.proyecto.screens.HomeScreen
+import com.tecsup.proyecto.screens.ProductosScreen
+import com.tecsup.proyecto.screens.VentasScreen
+import com.tecsup.proyecto.screens.ComprasScreen
+import com.tecsup.proyecto.screens.ReportesScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -37,10 +41,10 @@ fun MainComponent() {
         composable("route_login") { LoginScreen(navController) }
         composable("route_register") { RegisterScreen(navController) }
         composable("route_home") { HomeScreen(navController) }
-        composable("route_products") { ProductsPlaceholder() }
-        composable("route_sales") { SalesPlaceholder() }
-        composable("route_purchases") { PurchasesPlaceholder() }
-        composable("route_reports") { ReportsPlaceholder() }
+        composable ("route_productos"){ ProductosScreen(navController)  }
+        composable ("route_compras"){ ComprasScreen(navController) }
+        composable ("route_ventas"){ VentasScreen(navController) }
+        composable ("route_reportes"){ ReportesScreen(navController) }
     }
 }
 
@@ -49,15 +53,3 @@ fun MainComponent() {
 fun GreetingPreview() {
     MainComponent()
 }
-
-@Composable
-fun ProductsPlaceholder() { Text("Productos - próximamente") }
-
-@Composable
-fun SalesPlaceholder() { Text("Ventas - próximamente") }
-
-@Composable
-fun PurchasesPlaceholder() { Text("Compras/Insumos - próximamente") }
-
-@Composable
-fun ReportsPlaceholder() { Text("Cierre de caja/Reportes - próximamente") }
